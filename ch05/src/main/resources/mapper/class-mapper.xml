@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch05.dao.ClassDao">
+
+   <!--课程的resultMap-->
+   <resultMap id="courseMap" type="course">
+      <id property="courseId" column="ID"/>
+      <result property="courseName" column="COURSE_NAME"/>
+   </resultMap>
+
+   <!--身份证的resultMap-->
+   <resultMap id="cardMap" type="card">
+      <id property="cardId" column="ID"/>
+      <result property="cardNum" column="CARD_NUM"/>
+   </resultMap>
+
+   <!--学生的resultMap，为了在班级的resultMap中进行关联-->
+   <resultMap id="stuMap" type="students">
+      <id property="stuId" column="ID"/>
+      <result property="stuName" column="STU_NAME"/>
+      <result property="age" column="AGE"/>
+      <!--一对一关联身份证-->
+      <association property="card" resultMap="cardMap"/>
+      <!--多对多关联课程-->
+      <collection property="course" resultMap="courseMap"/>
+   </resultMap>
+
+   <!--班级的resultMap-->
+   <resultMap id="classMap" type="classInfo">
+      <id property="classId" column="ID"/>
+      <result property="className" column="C_NAME"/>
+      <!--使用collection属性一对多关联学生-->
+      <collection property="students" resultMap="stuMap"/>
+   </resultMap>
+
+
+   <!--关联查询某个班级下的学生信息-->
+   <select id="findClassById" parameterType="int" resultMap="classMap">
+      SELECT * FROM CLASS_INFO CLS LEFT JOIN STUDENTS S ON CLS.ID = S.C_ID
+      WHERE CLS.ID = #{classId}
+   </select>
+
+
+   <!--关联查询某个班级下的所有学生所选择的课程-->
+   <select id="findClassById2" parameterType="int" resultMap="classMap">
+      SELECT C.ID,C_NAME,S.STU_NAME,COU.COURSE_NAME FROM
+      CLASS_INFO CLS LEFT JOIN STUDENTS S ON CLS.ID = S.C_ID
+      LEFT JOIN CARD C ON S.ID = C.STU_ID
+      LEFT JOIN MIDDLE M ON S.ID = M.STU_ID
+      LEFT JOIN COURSE COU ON COU.ID = M.COURSE_ID
+      WHERE CLS.ID = #{classId}
+   </select>
+</mapper>

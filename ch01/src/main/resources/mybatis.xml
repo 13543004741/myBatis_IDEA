@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+<configuration>
+    <!--给对应的实体定义别名（引用别名）在mapper配置中就可以引用这个别名-->
+        <typeAliases>
+            <!--给指定的实体定义别名-->
+            <!--<typeAlias type="org.ch01.org.ch07.entity.org.org.ch03.org.ch07.entity.Students" alias="students"/>-->
+            <!--给整个包下的实体定义别名(这种方法更好用)，默认的别名的就是将类名的首字母变成小写就是别名了-->
+            <package name="org.ch01.entity"/>
+        </typeAliases>
+    <!--environments配置数据源环境，在environments下可以有多个
+    environment子节点，代表不同的数据源，default属性设置默认使用的数据源
+    ，引用的是environment的id-->
+    <environments default="mysql">
+        <!--mysql的数据源，id是数据源环境的唯一标识-->
+        <environment id="mysql">
+            <!--事务管理，type指定事务管理的类型，这里用的是JDBC-->
+            <transactionManager type="JDBC"/>
+            <!--数据源连接类型，这里使用mybatis自带的连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/mybatisDB?
+                useUnicode=true&amp;characterEncoding=UTF-8"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123"/>
+            </dataSource>
+        </environment>
+        <!--&lt;!&ndash;Oracle数据源&ndash;&gt;
+        <environment id="oracle">
+            <transactionManager type=""/>
+            <dataSource type=""/>
+        </environment>
+        &lt;!&ndash;SQLServer数据源&ndash;&gt;
+        <environment id="sqlServer">
+            <transactionManager type=""/>
+            <dataSource type=""/>
+        </environment>-->
+    </environments>
+
+    <!--指定映射配置文件的路径-->
+    <mappers>
+        <mapper resource="mapper/stuMapper.xml"/>
+    </mappers>
+</configuration> 

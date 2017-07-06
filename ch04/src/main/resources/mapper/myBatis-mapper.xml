@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch04.dao.StuDao">
+
+    <!--使用<where>和<if>标签实现动态的条件拼接-->
+    <select id="findStuByCondition" parameterType="map" resultType="students">
+        SELECT STU_ID AS sid, STU_NAME AS stuName,Stu_AGE AS stuAge FROM STU_INFO
+        <!--<where>标签会在上面的sql语句后面自动加上WHERE关键字-->
+        <!--倾向于拼接条件-->
+        <where>
+            <!--判断天骄参数是否为空，不为空的情况就加入查询条件，test属性判断map的key的值是否为空，
+            当第二个条件判断的时候必须加上AND关键字-->
+            <if test="stuName != null">
+                STU_NAME = #{stuName}
+            </if>
+            <if test="stuAge != null">
+                STU_AGE = #{stuAge}
+            </if>
+        </where>
+    </select>
+
+
+
+    <!--使用  <chose>标签动态选择条件-->
+    <select id="findStuByCondition2" parameterType="map" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge FROM STU_INFO
+        <!--倾向于选择条件-->
+        <!--这里的name和age对应测试类里面map里面的key-->
+        <choose>
+            <when test="name != null">
+                WHERE STU_NAME = #{name}
+            </when>
+            <when test="age != null">
+                WHERE STU_AGE = #{age}
+            </when>
+            <otherwise>
+                ORDER BY STU_ID DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <!--<forEach>循环标签，适用于or以及in子句-->
+    <select id="findStuByCondition3" parameterType="map" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge FROM STU_INFO
+        <if test="ageList != null">
+            <where>
+                <!--循环遍历参数集合ageList-->
+                <foreach collection="ageList" item="age">
+                    OR STU_AGE = #{age}
+                </foreach>
+            </where>
+        </if>
+    </select>
+
+
+
+    <!--in子句-->
+    <select id="findStuByCondition4" parameterType="map" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge FROM STU_INFO
+        <if test="ageList != null">
+            <where>
+                STU_AGE IN
+                <foreach collection="ageList" item="age" open="(" separator="," close=")">
+                    #{age}
+                </foreach>
+            </where>
+        </if>
+    </select>
+
+
+    <!--<set>标签，它和<where>标签类似-->
+    <update id="update" parameterType="map">
+        UPDATE STU_INFO
+        <!--<set>标签中当条件成立的属性，才会加入到sql的set语句中-->
+        <set>
+            <if test="name != null">
+                STU_NAME = #{name},
+            </if>
+            <if test="age != null">
+                STU_AGE = #{age}
+            </if>
+        </set>
+        WHERE STU_ID = #{sid}
+    </update>
+</mapper>
