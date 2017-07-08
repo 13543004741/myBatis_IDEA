@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch09.dao.CardDao">
+
+    <!-- 配置Students的resultMap -->
+    <resultMap id="stuMap" type="students">
+        <id property="sid" column="STU_ID"/>
+        <result property="stuName" column="STU_NAME"/>
+        <result property="stuAge" column="STU_AGE"/>
+    </resultMap>
+
+    <!-- 配置StuCard的resultMap -->
+    <resultMap id="cardMap" type="stuCard">
+        <id property="cardId" column="CARD_ID"/>
+        <result property="cardNum" column="CARD_NUM"/>
+        <!-- 一对一关联学生 -->
+        <association property="student" resultMap="stuMap"/>
+    </resultMap>
+
+</mapper>

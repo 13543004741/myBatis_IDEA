@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch01.dao.StuDao">
+    <!--mapper用于映射dao的接口，namespace指定dao接口的完整类名-->
+    <!--映射dao接口中的每一个方法-->
+    <!--映射接口中的添加方法,parameterType指定方法中需要使用的参数类型。
+    参数的类型可以在mybatis核心配置文件中指定一个别名(要一一对应)，方便在这里引用，
+    这样就不需要写完整的类名了-->
+    <insert id="save" parameterType="students">
+        <!--在sql中使用#{}类引用实体中的属性名，mybatis就会将这些属性的值传入sql语句中执行-->
+        INSERT INTO STU_INFO(STU_NAME,STU_AGE) VALUES(#{stuName},#{stuAge})
+    </insert>
+
+
+    <!-- 插入数据时还可以使用主键策略，生成后的主键会自动赋值到当前操作的实体中 -->
+    <!-- 1. 使用数据库自增长策略生成主键，适用于SQLServer、MySql等数据库。
+    useGeneratedKeys="true"表示使用自动增长，keyProperty对应实体中主键id属性-->
+    <!--<insert id="save" parameterType="students" useGeneratedKeys="true" keyProperty="sid">
+        INSERT INTO STU_INFO(STU_NAME,STU_AGE) VALUES(#{stuName},#{stuAge})
+    </insert>-->
+    <!-- 2. 使用序列Sequence生成主键策略,适用于Oracle等数据库-->
+    <!-- selectKey用于执行查询Sequence语句，得到自增长的值，
+        order="BEFORE"表示在执行INSERT语句之前将序列的值设置到sid属性上-->
+    <!--<insert id="save" parameterType="students">
+        <selectKey keyProperty="sid" resultType="int" order="BEFORE">
+            SELECT MY_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO STUDENTS(STU_ID,STU_NAME,STU_AGE) VALUES(#{stuName},#{stuAge})
+    </insert>-->
+    <!-- 3. 使用UUID主键生成策略，可以使用数据的uuid函数，也可以通过程序生成UUID
+     例如：oracle中生成uuid的函数为：sys_guid()
+          mysql中生成uuid的函数为：uuid()-->
+    <!--<insert id="save" parameterType="students">
+        <selectKey keyProperty="sid" resultType="String" order="BEFORE">
+            SELECT UUID() FROM DUAL
+        </selectKey>
+        INSERT INTO STUDENTS(STU_NAME,STU_AGE) VALUES(#{stuName},#{stuAge})
+    </insert>-->
+
+
+
+
+
+    <!--映射接口中的删除方法，参数类型是int类型，当参数不是一个实体对象，而是一个基本数据类型，
+    并且只有一个参数的情况下，这个参数的名称可以自定义-->
+    <delete id="delete" parameterType="int">
+        DELETE FROM STU_INFO WHERE STU_ID = #{sid}
+    </delete>
+    <!--映射接口中的更新方法-->
+    <update id="update" parameterType="students">
+        UPDATE STU_INFO SET STU_NAME = #{stuName},STU_AGE = #{stuAge} WHERE STU_ID = #{sid}
+    </update>
+</mapper>

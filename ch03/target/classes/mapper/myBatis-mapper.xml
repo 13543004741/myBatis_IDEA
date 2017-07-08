@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch03.dao.StuDao">
+
+    <!-- 映射接口中的方法 -->
+    <!-- 1. 单个查询条件 -->
+    <!-- parameterType指定方法参数的类型,这里指定为int
+         sql语句中使用#{}作为条件参数的占位符。
+         如果条件参数只有一个，那么#{}中的名称可以自定义-->
+    <select id="findStuById" parameterType="int" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge
+        FROM STU_INFO WHERE STU_ID = #{sid}
+    </select>
+
+    <select id="findStuByName" resultType="students" parameterType="String">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge
+        FROM STU_INFO WHERE STU_NAME = #{stuName}
+    </select>
+
+    <!-- 2. 多个查询条件 -->
+    <!-- 当有多个参数作为查询条件的时候，不需要指定parameterType属性
+     而是在SQL语句中使用#{arg}或者#{param}占位符来标识
+     例如：#{arg0}, 代表第一个参数，0是下标。注意：arg参数的下标是从0开始
+          #{param1} 代表第一个参数，1是下标。注意：param参数的下标是从1开始-->
+    <select id="findStuByIdAndByName" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge
+         FROM STU_INFO WHERE STU_ID = #{arg0} AND STU_NAME = #{arg1}
+    </select>
+
+
+    <!-- 3. 将参数封装为象作为查询条件,
+    这时可以使用parameterType指定参数类型为对象的完整类名或者别名。也可以省略parameterType属性
+     在SQL中的#{}的名称指定为对象中的属性名即可-->
+    <select id="findStudent" parameterType="students" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge
+        FROM STU_INFO WHERE STU_ID = #{sid} AND STU_NAME = #{stuName}
+    </select>
+
+
+    <!-- 4. 模糊查询,注意当使用模糊查询的时候，参数的占位符就不是使用#{},而是使用${value}-->
+    <select id="likeStudents" parameterType="String" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge
+        FROM STU_INFO WHERE STU_NAME LIKE "%"#{stuName}"%"
+    </select>
+</mapper>

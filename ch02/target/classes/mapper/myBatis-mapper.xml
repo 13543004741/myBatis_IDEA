@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch02.dao.StuDao">
+
+    <!--id映射接口中的方法名-->
+    <!--1.使用别名映射到实体中，只要别名和实体的属性名一致，就可以完成自动映射
+    resultType属性指定要映射的类型，students就是实体的别名
+    注意：如果表的列名和实体的属性名是一样的，那么就不需要别名映射，mybatis会自动完成表单映射-->
+   <!-- <select id="findStuForList" resultType="students">
+        SELECT STU_ID AS sid,STU_NAME AS stuName,STU_AGE AS stuAge FROM STU_INFO
+    </select>-->
+
+    <!--2.使用resultMap来完成对象的映射，id可以自定义，在下面的查询中引用这个id
+    type指定要映射的实体类型，这里同样使用的是别名-->
+    <resultMap id="stuMap" type="students">
+        <!--映射id主键-->
+        <id property="sid" column="STU_ID"/>
+        <!--映射其他属性使用result配置-->
+        <result property="stuName" column="STU_NAME"/>
+        <result property="stuAge" column="STU_AGE"/>
+    </resultMap>
+
+    <!--这时就不是使用resultType属性，而是使用resultMap属性，
+    这个属性的值是引用一个自定义的resultMap映射配置的id-->
+    <select id="findStuEntityForList" resultMap="stuMap">
+        SELECT * FROM STU_INFO
+    </select>
+
+    <!--3.使用map来完成映射，如果使用map映射，只需要指定resultType属性
+    并将值设置为map即可。映射的结果就是列名作为key，列的值作为value保存到map中-->
+    <select id="findStuForMapList" resultType="map">
+        SELECT * FROM STU_INFO
+    </select>
+
+    <!--4.查询结果返回的是基本数据类型，同样使用resultType指定即可-->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM STU_INFO
+    </select>
+</mapper>

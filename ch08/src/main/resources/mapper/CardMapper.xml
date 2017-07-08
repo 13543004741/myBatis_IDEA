@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch08.dao.CardDao">
+
+    <!-- 配置Students的resultMap -->
+    <resultMap id="stuMap" type="students">
+        <id property="stuId" column="STU_ID"/>
+        <result property="stuName" column="STU_NAME"/>
+        <result property="stuAge" column="STU_AGE"/>
+        <result property="stuSex" column="STU_SEX"/>
+    </resultMap>
+
+    <!-- 配置StuCard的resultMap -->
+    <resultMap id="cardMap" type="card">
+        <id property="cardId" column="CARD_ID"/>
+        <result property="cardNum" column="CARD_NUM"/>
+        <!-- 一对一关联学生 -->
+        <association property="student" resultMap="stuMap"/>
+    </resultMap>
+
+   <!-- <select id="findCardById" parameterType="int" resultMap="cardMap">
+        SELECT * FROM CARD_INFO C LEFT JOIN STU_INFO S ON C.STU_ID = S.STU_ID
+        WHERE C.STU_ID = #{cid}
+    </select>-->
+</mapper>

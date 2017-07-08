@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ch08.dao.StuDao">
+
+    <!-- 身份证的resultMap -->
+    <resultMap id="cardMap" type="card">
+        <id property="cardId" column="CARD_ID"/>
+        <result property="cardNum" column="CARD_NUM"/>
+    </resultMap>
+
+    <!-- 班级的resultMap -->
+    <resultMap id="classMap" type="classInfo">
+        <id property="classId" column="CLASS_ID"/>
+        <result property="className" column="CLASS_NAME"/>
+    </resultMap>
+
+    <!-- 课程的resultMap -->
+    <resultMap id="courseMap" type="course">
+        <id property="courseId" column="COURSE_ID"/>
+        <result property="courseName" column="COURSE_NAME"/>
+    </resultMap>
+
+    <!-- 学生的resultMap，关联身份证、班级、课程 -->
+    <resultMap id="stuMap" type="students">
+        <id property="stuId" column="STU_ID"/>
+        <result property="stuName" column="STU_NAME"/>
+        <result property="stuAge" column="STU_AGE"/>
+        <result property="stuSex" column="STU_SEX"/>
+        <!-- 使用association属性一对一关联身份证，property指定实体中关联的属性名
+         resultMap属性引用上面定义的StuCard的resultMap-->
+        <association property="stuCard" resultMap="cardMap"/>
+        <!-- 使用association属性多对一关联班级 -->
+        <association property="classInfo" resultMap="classMap"/>
+        <!-- 使用collection属性多对多关联课程 -->
+        <collection property="course" resultMap="courseMap"/>
+    </resultMap>
+
+    <!-- 关联查询学生和身份证信息，应该使用resultMap属性 -->
+   <!-- <select id="findStuById" parameterType="int" resultMap="stuMap">
+        SELECT * FROM STU_INFO S LEFT JOIN CARD_INFO C ON S.STU_ID = C.STU_ID
+        WHERE S.STU_ID = #{sid}
+    </select>-->
+
+    <!-- 关联查询学生和身份证以及对应班级信息 -->
+   <!-- <select id="findStuById2" parameterType="int" resultMap="stuMap">
+        SELECT * FROM STU_INFO S LEFT JOIN CARD_INFO CA ON S.STU_ID = CA.STU_ID
+        LEFT JOIN CLASS_INFO C ON C.CLASS_ID = S.CLASS_ID WHERE S.STU_ID = #{sid}
+    </select>-->
+
+    <!-- 关联查询某个学生所选的课程 -->
+   <!-- <select id="findStuById3" parameterType="int" resultMap="stuMap">
+        SELECT * FROM STU_INFO S LEFT JOIN STU_COURSE SC ON S.STU_ID = SC.STU_ID
+        LEFT JOIN COURSE_INFO CO ON CO.COURSE_ID = SC.COURSE_ID
+        WHERE S.STU_ID = #{sid}
+    </select>-->
+
+</mapper>

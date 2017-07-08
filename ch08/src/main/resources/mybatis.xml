@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!-- 定义所有实体的别名 -->
+    <typeAliases>
+        <package name="org.ch08.entity"/>
+    </typeAliases>
+
+    <!-- 数据源的环境配置 -->
+    <environments default="mysql">
+        <environment id="mysql">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/hql?useUnicode=true&amp;characterEncoding=UTF-8"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 指定mapper映射文件的路径 -->
+    <mappers>
+        <!-- 使用注解映射Dao接口，因此这里只需要指定StuDao接口的完整类名 -->
+        <!--<mapper class="org.ch08.dao.StuDao"/>
+        <mapper class="org.ch08.dao.ClassDao"/>
+        <mapper class="org.ch08.dao.CardDao"/>
+        <mapper class="org.ch08.dao.CourseDao"/>-->
+        <!-- 指定mapper映射文件的路径 -->
+        <mapper resource = "mapper/StuMapper.xml"/>
+        <mapper resource = "mapper/ClassMapper.xml"/>
+        <mapper resource = "mapper/CardMapper.xml"/>
+        <mapper resource = "mapper/CourseMapper.xml"/>
+    </mappers>
+
+</configuration>

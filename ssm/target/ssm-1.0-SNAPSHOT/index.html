@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <script>
+        $(function () {
+            $("#button1").on("click",function () {
+                var id = $("#f1").serialize();
+                $.get("findStudent",id,function (result) {
+                    var str = JSON.stringify(result);
+                    alert(str);
+                });
+            });
+
+            $("#button2").on("click",function () {
+                var params = $("#f2").serialize();
+                $.get("findStuByIdOrName",params,function (result) {
+                    var str = JSON.stringify(result);
+                    alert(str);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <form id="f1">
+        stuId:<input type="text" name="students.stuId">
+        <input type="button" id="button1" value="submit">
+    </form><br/>
+
+    <form id="f2">
+        stuAge:<input type="text" name="students.age"><br>
+        stuName:<input type="text" name="students.stuName"><br>
+        <input type="button" id="button2" value="submit">
+    </form>
+</body>
+</html>

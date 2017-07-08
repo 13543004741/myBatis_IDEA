@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 开启相应的注解处理器，并指定扫描路径 -->
+    <context:component-scan base-package="org.ch09"/>
+
+    <!-- 数据源,DBCP连接池 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+        <property name="initialSize" value="5"/>
+        <property name="maxActive" value="60"/>
+        <property name="minIdle" value="10"/>
+        <property name="maxWait" value="2000"/>
+    </bean>
+
+    <!-- 配置Mybatis的SqlSessionFactoryBean -->
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 注入数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 配置实体别名-->
+        <property name="typeAliasesPackage" value="org.ch09.entity"/>
+        <!-- 配置mapper映射文件路径(如果使用到mapper映射配置文件则需要指定)-->
+        <property name="mapperLocations" value="classpath*:mapper/*.xml"/>
+    </bean>
+
+    <!-- 配置mybatis的MapperScannerConfigurer,扫描相应的mapper接口(也就是相应的Dao接口)-->
+    <bean id="mapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 只需要指定Dao接口所在的包路径即可 -->
+        <property name="basePackage" value="org.ch09.dao"/>
+    </bean>
+
+    <!-- 配置JDBC事务管理器-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 注入数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 启用注解事务驱动 -->
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+</beans>
